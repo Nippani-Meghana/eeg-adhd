@@ -25,11 +25,11 @@
 
 ---
 
-## Template — copy this block for each paper
 
-### Paper N: [title]
+### Paper N: [ADHD-AID: Aiding Tool for Detecting Children’s Attention Deficit Hyperactivity Disorder via EEG-Based Multi-Resolution Analysis and Feature Selection]
 
-**Citation:**
+**Citation:** Attallah, O. ADHD-AID: Aiding Tool for Detecting Children’s Attention Deficit Hyperactivity Disorder via EEG-Based Multi-Resolution Analysis and Feature Selection. Biomimetics 2024, 9, 188. https://doi.org/10.3390/biomimetics9030188 
+
 **Method in one sentence:**
 
 #### Explicit assumptions (what the method takes as given)
@@ -50,32 +50,19 @@
 
 ---
 
-## Starter prompts per tier (my own analysis — verify against each paper, don't just accept)
-
-These are questions to interrogate each paper with. I fill in the answers myself.
 
 ### Tier 1 — Classical ML (ADHD-AID)
-- Do the hand-crafted features (band-power, entropy, nonlinear, statistical) assume stationarity within a segment? Is EEG actually stationary over that window?
-- Does the classifier treat each segment as an independent sample? **If segments from one child appear in both train and test, is the model learning "ADHD" or learning "this child"?** ← the central assumption to test
-- Feature selection: is it run *inside* or *outside* the CV loop? If outside, that's selection leakage — a second, subtler inflation.
 
-### Tier 2 — Deep Learning (CNN / spectrogram)
-- The network learns its own features — but does the signal→image transform (STFT window, overlap) preserve the discriminative information, or throw it away before the CNN sees it?
-- **121 subjects is small for DL.** Does the method assume enough data to avoid overfitting? Watch for: train accuracy ≫ val accuracy.
-- How do 19 channels become a CNN input (stacked / averaged / one-image-per-channel)? This is usually under-specified and high-impact.
-- Transfer learning from ImageNet: does a network pretrained on natural images transfer sensibly to spectrograms? What's the implicit assumption there?
 
-### Tier 3 — Advanced (TBD with professor)
-- If connectivity / graph-based: assumes relationships *between* channels carry signal that Tiers 1–2 ignored. Is that assumption supported by ADHD neuroscience (e.g. fronto-parietal differences)?
-- Does added complexity actually beat the honest subject-wise baseline from Tiers 1–2, or only the inflated segment-wise numbers?
-- **Sequencing note:** choose this paper *before* finalizing Paper 2, so Paper 2's output representation feeds naturally into it.
+### Tier 2 — Deep Learning (CNN)
+
+
+### Tier 3 — Advanced
+
 
 ---
 
 ## Running log of cross-cutting lessons
 
-_(The meta-observations that span papers — this section is the actual deliverable.)_
 
-1. **Splitting strategy dominates reported accuracy** on this dataset. Segment-wise CV inflates; subject-wise/LOSO is honest. Categorize every paper in my review by which they used. (e.g. TMP19 reports 95.57% 10-fold vs. 77.93% LOSO — same paper, same data.)
-2.
-3.
+
