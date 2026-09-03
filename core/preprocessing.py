@@ -1,5 +1,5 @@
 #helper_functions.py
-#This python file contains all the pre-processing functions, performance metrics and other functions
+#This python file contains all the pre-processing functions
 
 import scipy.signal as signal
 

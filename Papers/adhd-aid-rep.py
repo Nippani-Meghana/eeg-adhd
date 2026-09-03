@@ -26,6 +26,7 @@ import pywt
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import pysdkit as psy
 
 #Local imports
 import nasarbadi_helper
@@ -91,4 +92,49 @@ for subject_id in all_subjects:
 #   └────────────────────────────┘
 
 #Multi-Resolution Analysis
-#VDM
+
+#1. VDM
+
+#VMD Parameters
+K = 9        
+alpha = 2000 
+tau = 0      
+DC = 0       
+init = "uniform"     
+tol = 1e-7
+VMD_DIR = OUTPUT_DIR / "vmd"
+VMD_DIR.mkdir(parents=True, exist_ok=True)
+
+for subject_id in all_subjects:
+    subject_file = OUTPUT_DIR/f"subject_{subject_id}.npy"
+    subject_data = np.load(subject_file)
+
+    vmd_file = VMD_DIR / f"subject_{subject_id}_vmd.npy"
+
+    if vmd_file.exists():
+            print(f"Skipping subject {subject_id}: 'subject_{subject_id}_vmd' already exists.")
+            continue
+    
+    channel, segment, sample = subject_data.shape
+    subject_vmd = np.empty(
+        (channel, segment, K, sample),
+        dtype=np.float32
+    )
+    for i in range(channel):
+        for j in range (segment):
+            signal = subject_data[i,j,:]
+            vmd = psy.VMD(alpha=alpha,K=K,tau=tau,DC=DC,init=init,tol=tol)
+            IMFs = vmd.fit_transform(signal=signal)
+            subject_vmd[i, j, :, :] = IMFs
+    
+    np.save(vmd_file, subject_vmd)
+
+    print(
+        f"Saved: {vmd_file.name} | "
+        f"Array Shape: {subject_vmd.shape}"
+    )
+
+
+
+
+

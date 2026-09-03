@@ -1,8 +1,8 @@
 #nasarbadi_builder.py
 
 import pandas as pd
-import EegDataset
-import EegSubject
+from core import EegDataset
+from core import EegSubject
 import os
 
 def _build_subject_csvs(data):
