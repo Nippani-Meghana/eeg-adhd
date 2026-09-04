@@ -31,6 +31,7 @@ import pysdkit as psy
 #Local imports
 import nasarbadi_helper
 from core import preprocessing as hp
+from core import feature_extraction_metrics as fsm
 
 #Configuration
 PROJECT_ROOT = _project_root
@@ -50,6 +51,7 @@ all_subjects = pd.read_csv(
 )["ID"].tolist()
 
 #Pre-processing
+print("Pre-processing:")
 for subject_id in all_subjects:
     subject_data, class_label = nasarbadi_helper.get_subject_info(subject_id)
 
@@ -105,6 +107,7 @@ tol = 1e-7
 VMD_DIR = OUTPUT_DIR / "vmd"
 VMD_DIR.mkdir(parents=True, exist_ok=True)
 
+print("VDM:")
 for subject_id in all_subjects:
     subject_file = OUTPUT_DIR/f"subject_{subject_id}.npy"
     subject_data = np.load(subject_file)
@@ -134,7 +137,16 @@ for subject_id in all_subjects:
         f"Array Shape: {subject_vmd.shape}"
     )
 
+#2. Feature extraction
+#Testing statisitical features for now
 
+def load_vm(subject_id):
+    VMD_DIR = OUTPUT_DIR / "vmd"
+    vmd_subject_file = VMD_DIR/f"subject_{subject_id}_vmd.npy"
+    vmd_data = np.load(vmd_subject_file)
+    return vmd_data
 
-
-
+data = load_vm("v1p")
+imf = data[0, 0, 2, :]
+features = fsm.statistical_time_domain(imf)
+print(features)

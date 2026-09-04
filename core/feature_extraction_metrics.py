@@ -21,6 +21,7 @@ def statistical_time_domain(imf_wave):
     9. Mean Energy: how much amplitude/activity the IMF contains
     10. Mean Teager Energy: How strong is its local oscillatory activity considering 
     amplitude + frequency?
+    
     """
     mean_val = np.mean(imf_wave)
     std_val  = np.std(imf_wave)
