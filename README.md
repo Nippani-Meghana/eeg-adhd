@@ -22,9 +22,10 @@ eeg-adhd/
 │   ├── interim_data/
 │   ├── adhd-aid-data/
 │   └── metadata/
-├── Papers/
-│   ├── adhd-aid-rep.py
-│   ├── adhd-aid.ipynb
+├── papers/
+│   ├──_adhd_aid_
+│   │   ├── adhd-aid-rep.py
+│   │   ├── adhd-aid.ipynb
 │   └── data_exploration.ipynb
 ├── nasarbadi_helper.py
 ├── requirements.txt
@@ -45,7 +46,7 @@ Shared Python modules used across the project.
 
 - **`preprocessing.py`** - Signal preprocessing functions: a Butterworth bandpass filter, a notch filter for powerline noise removal, and a function to segment continuous EEG signals into fixed-length windows.
 
-- **`feature_extraction_metrics.py`** - Feature extraction functions for EEG signals. Currently implements statistical time-domain features (mean, std, variance, skewness, kurtosis, mean curve length, mean energy). Spectral band power, entropy, Hjorth parameters, difference features, and autoregressive model functions are defined but not yet implemented.
+- **`feature_extraction_metrics.py`** - Feature extraction functions for EEG signals. Currently implements statistical time-domain features (mean, std, variance, skewness, kurtosis, mean curve length, mean energy). Spectral band power which includes Band-Power Alpha, Theta, Delta, Gamma, Beta and Theta/Alpha ratio is implemneted along with log energy entropy, but other entropy ,easures, Hjorth parameters, difference features, and autoregressive model functions are defined but not yet implemented.
 
 ---
 
@@ -71,7 +72,7 @@ All data files. The contents of this folder are not committed to version control
 
 ---
 
-### Papers/
+### papers/
 
 Scripts and notebooks that replicate and explore published EEG-ADHD analysis methods.
 
@@ -104,7 +105,7 @@ pip install -r requirements.txt
 To run the ADHD-AID replication script:
 
 ```bash
-python Papers/adhd-aid-rep.py
+python papers/_adhd_aid_/adhd-aid-rep.py
 ```
 
 The builder script (`builder/nasarbadi_builder.py`) only needs to be run once to generate interim data from the raw CSV. That step is already done and the output files are in place.

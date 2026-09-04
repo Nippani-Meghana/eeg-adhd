@@ -5,10 +5,12 @@
 # via EEG-Based Multi-Resolution Analysis and Feature Selection. 
 # Biomimetics 2024, 9, 188. https://doi.org/10.3390/biomimetics9030188
 
+# Local imports 
 from core import EegDataset
+
+# Libraries imported
 import pandas as pd
 
-FS = 128
 BANDPASS_ORDER = 6
 BANDPASS_RANGE = (0.5, 60.0)
 NOTCH_FREQ = 50.0
