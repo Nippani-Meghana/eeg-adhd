@@ -46,8 +46,33 @@ def spectral_band_power(imf_wave):
      The above 5 ask how much of EEG signal is happening at each frequency range
      6.Ratio Band-Power Alpha/Beta 
      """
-    
-    pass
+    from scipy import welch
+    from scipy import simpson
+    from core import EegDataset
+    bands = {
+    'Delta': (1, 4),
+    'Theta': (4, 8),
+    'Alpha': (8, 12),
+    'Beta': (12, 30),
+    'Gamma': (30, 60)
+    }
+    fs = EegDataset.sampling_frequency_hz
+    frequencies, psd = welch(imf_wave, fs, nperseg=fs*2)
+
+    def get_band_power(fs, psd, band_range):
+        idx_band = np.logical_and(fs >= band_range[0], fs <= band_range[1])
+        band_power = simpson(psd[idx_band], fs[idx_band])
+        return band_power
+
+    delta_power = get_band_power(frequencies, psd, bands['Delta'])
+    theta_power = get_band_power(frequencies, psd, bands['Theta'])
+    alpha_power = get_band_power(frequencies, psd, bands['Alpha'])
+    beta_power = get_band_power(frequencies, psd, bands['Beta'])
+    gamma_power = get_band_power(frequencies, psd, bands['Gamma'])
+    alpha_beta_ratio = alpha_power/beta_power
+
+    return [delta_power, theta_power, alpha_power, beta_power, gamma_power, alpha_beta_ratio]
+
 
 def information_theory(imf_wave):
     """Calculates and returns the following:

@@ -4,6 +4,11 @@
 # via EEG-Based Multi-Resolution Analysis and Feature Selection. 
 # Biomimetics 2024, 9, 188. https://doi.org/10.3390/biomimetics9030188
 
+# To run: 
+# cd papers
+# python adhd-aid-rep.py
+
+
 #Path resolution 
 import sys
 from pathlib import Path
@@ -138,7 +143,8 @@ for subject_id in all_subjects:
     )
 
 #2. Feature extraction
-#Testing statisitical features for now
+# Testing statisitical features for now
+# Assuming that all the feature extraction metrics are performed on the vmd imfs
 
 def load_vm(subject_id):
     VMD_DIR = OUTPUT_DIR / "vmd"
