@@ -12,7 +12,7 @@ def _build_subject_csvs(data):
     unique_ids = data["ID"].unique()
 
     # Check if all files already exist
-    all_files_exist = all(os.path.exists(f"./datasets/interim_data/nasarbadi/{id}.csv") for id in unique_ids)
+    all_files_exist = all(os.path.exists(f"../datasets/interim_data/nasarbadi/{id}.csv") for id in unique_ids)
     if all_files_exist:
         print(f"All {len(unique_ids)} files already exist. Skipping conversion.")
         return
@@ -21,7 +21,7 @@ def _build_subject_csvs(data):
     for id in unique_ids:
         subject_data = data.loc[data["ID"] == id]
         subject_data = subject_data.drop(columns=["ID", "Class"])  
-        subject_data.to_csv(f"./datasets/interim_data/nasarbadi/{id}.csv", index=False)
+        subject_data.to_csv(f"../datasets/interim_data/nasarbadi/{id}.csv", index=False)
 
 def _build_subject_index(data, sampling_freq_hz, metadata_path):
     if(data is None):
@@ -45,7 +45,7 @@ def _build_subject_index(data, sampling_freq_hz, metadata_path):
 if __name__ == "__main__":
 
     # Load the raw data
-    data_1 = pd.read_csv("./datasets/raw_data/adhdata.csv")
+    data_1 = pd.read_csv("../datasets/raw_data/adhdata.csv")
 
     # Create an instance of EegDataset
     df_1 = EegDataset.EegDataset(
@@ -56,9 +56,9 @@ if __name__ == "__main__":
         adhd_num=data_1[data_1["Class"] == "ADHD"]["ID"].nunique(),
         control_num=data_1[data_1["Class"] == "Control"]["ID"].nunique(),
         channel_names=[f"Channel_{i}" for i in range(19)],
-        raw_data_path="./datasets/raw_data/adhdata.csv",
-        interim_data_path="./datasets/interim_data/nasarbadi/",
-        metadata_path = "./datasets/metadata"
+        raw_data_path="../datasets/raw_data/adhdata.csv",
+        interim_data_path="../datasets/interim_data/nasarbadi/",
+        metadata_path = "../datasets/metadata"
 
     )
 

@@ -36,7 +36,7 @@ def statistical_time_domain(imf_wave):
     return [mean_val, std_val, var_val, min_val, max_val,skew_val, 
             kurtosis_val, mcl_val, mean_en_val]
 
-def spectral_band_power(imf_wave):
+def spectral_band_power(fs, imf_wave):
     """Calculates and returns the following:
      1.Band-Power Alpha: amount of signal power in the alpha frequency range (~8-13 Hz).
      2.Band-Power Beta: how much signal power is present in the beta frequency range.
@@ -46,9 +46,8 @@ def spectral_band_power(imf_wave):
      The above 5 ask how much of EEG signal is happening at each frequency range
      6.Ratio Band-Power Alpha/Beta 
      """
-    from scipy import welch
-    from scipy import simpson
-    from core import EegDataset
+    from scipy.signal import welch
+    from scipy.integrate import simpson
     bands = {
     'Delta': (1, 4),
     'Theta': (4, 8),
@@ -56,12 +55,11 @@ def spectral_band_power(imf_wave):
     'Beta': (12, 30),
     'Gamma': (30, 60)
     }
-    fs = EegDataset.sampling_frequency_hz
     frequencies, psd = welch(imf_wave, fs, nperseg=fs*2)
 
-    def get_band_power(fs, psd, band_range):
-        idx_band = np.logical_and(fs >= band_range[0], fs <= band_range[1])
-        band_power = simpson(psd[idx_band], fs[idx_band])
+    def get_band_power(frequencies, psd, band_range):
+        idx_band = np.logical_and(frequencies >= band_range[0], frequencies <= band_range[1])
+        band_power = simpson(psd[idx_band], frequencies[idx_band])
         return band_power
 
     delta_power = get_band_power(frequencies, psd, bands['Delta'])
@@ -74,12 +72,19 @@ def spectral_band_power(imf_wave):
     return [delta_power, theta_power, alpha_power, beta_power, gamma_power, alpha_beta_ratio]
 
 
-def information_theory(imf_wave):
+def information_theory(imf_wave, eps):
     """Calculates and returns the following:
-    1.Log Energy Entropy
-    2.Rényi Entropy
-    3.Shannon Entropy
-    4.Tsallis Entropy"""
+    1.Log Energy Entropy: Distribution of signal energy, logarithmically scaled
+    2.Rényi Entropy: Overall uncertainty/disorder
+    3.Shannon Entropy: Generalized entropy with tunable sensitivity
+    4.Tsallis Entropy: Generalized entropy suited to complex/non-extensive distributions
+    """
+    wave_sq = imf_wave**2
+    wave_sq = np.where(wave_sq == 0, eps, wave_sq )
+    log_energy_entropy = np.sum(np.log(wave_sq))
+
+    
+
 
 def Hjorth_dynamic_variations(imf_wave):
     """Calculates and returns the following:

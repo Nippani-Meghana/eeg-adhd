@@ -5,7 +5,7 @@
 # Biomimetics 2024, 9, 188. https://doi.org/10.3390/biomimetics9030188
 
 # To run: 
-# cd papers
+# cd papers/_adhd_aid_
 # python adhd-aid-rep.py
 
 
@@ -37,18 +37,29 @@ import pysdkit as psy
 import nasarbadi_helper
 from core import preprocessing as hp
 from core import feature_extraction_metrics as fsm
+from core import EegDataset
+import config
 
 #Configuration
 PROJECT_ROOT = _project_root
 OUTPUT_DIR = PROJECT_ROOT / "datasets" / "adhd-aid-data"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-FS = 128                          # Sampling frequency (Hz)
-BANDPASS_ORDER = 4                # Butterworth filter order
-BANDPASS_RANGE = (0.5, 45.0)     # Bandpass frequency range (Hz) — standard for EEG
-NOTCH_FREQ = 50.0                 # Notch filter frequency (Hz) — powerline noise
-NOTCH_Q = 30.0                   # Notch quality factor
-SEGMENT_DURATION = 4              # Segment length (seconds)
+
+data_1 = pd.read_csv("../../datasets/raw_data/adhdata.csv")
+nasarbadi_dataset = EegDataset.EegDataset(
+    name="nasarbadi_adhd",
+    sampling_freq_hz=128.0,
+    participants=len(data_1["ID"].unique()),
+    num_channels=19,
+    adhd_num=data_1[data_1["Class"] == "ADHD"]["ID"].nunique(),
+    control_num=data_1[data_1["Class"] == "Control"]["ID"].nunique(),
+    channel_names=[f"Channel_{i}" for i in range(19)],
+    raw_data_path="./datasets/raw_data/adhdata.csv",
+    interim_data_path="../../datasets/interim_data/nasarbadi/",
+    metadata_path = "../../datasets/metadata"
+
+    )
 
 #Subject List
 all_subjects = pd.read_csv(
@@ -72,9 +83,9 @@ for subject_id in all_subjects:
         raw_data = subject_data[channel].values
 
         # Preprocessing cascade
-        bandpassed = hp.iir_butterworth_filter(raw_data, order=BANDPASS_ORDER, freq_range=BANDPASS_RANGE, fs=FS)
-        cleaned    = hp.iir_notch_filter(bandpassed, notch_freq=NOTCH_FREQ, Q=NOTCH_Q, fs=FS)
-        segmented  = hp.four_sec_segment(cleaned, segment_duration=SEGMENT_DURATION, fs=FS)
+        bandpassed = hp.iir_butterworth_filter(raw_data, order=config.BANDPASS_ORDER, freq_range=config.BANDPASS_RANGE, fs=nasarbadi_dataset.sampling_freq_hz)
+        cleaned    = hp.iir_notch_filter(bandpassed, notch_freq=config.NOTCH_FREQ, Q=config.NOTCH_Q, fs=nasarbadi_dataset.sampling_freq_hz)
+        segmented  = hp.four_sec_segment(cleaned, segment_duration=config.SEGMENT_DURATION, fs=nasarbadi_dataset.sampling_freq_hz)
 
         subject_processed_channels.append(segmented)
 
@@ -154,5 +165,15 @@ def load_vm(subject_id):
 
 data = load_vm("v1p")
 imf = data[0, 0, 2, :]
-features = fsm.statistical_time_domain(imf)
-print(features)
+stats_features = fsm.statistical_time_domain(imf)
+print("Statisitical Features:")
+print(stats_features)
+
+print("Spectral Band Power features: ")
+band_power_features = fsm.spectral_band_power(nasarbadi_dataset.sampling_freq_hz, imf)
+print(band_power_features)
+
+
+
+
+
