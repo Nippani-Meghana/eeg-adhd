@@ -28,5 +28,4 @@ nasarbadi_dataset = EegDataset.EegDataset(
     raw_data_path="./datasets/raw_data/adhdata.csv",
     interim_data_path="../../datasets/interim_data/nasarbadi/",
     metadata_path = "../../datasets/metadata"
-
     )
