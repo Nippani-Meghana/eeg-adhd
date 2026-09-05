@@ -121,10 +121,20 @@ def Hjorth_dynamic_variations(wave):
 
 def difference_features(wave):
     """Calculates and returns the following:
-    1. First Difference
-    2. Second Difference
-    3. Normalized First Difference
-    4. Normalized Second Difference"""
+    1. First Difference: How much did the signal change at each step?
+    2. Second Difference: Is the rate at which the signal is changing itself changing?
+    3. Normalized First Difference: How rapidly does the signal change, relative to how 
+    large the signal itself is?
+    4. Normalized Second Difference: how rapidly the signal's rate of change changes, relative 
+    to the signal's overall magnitude.
+    """
+    first_diff = np.diff(wave)
+    second_diff = np.diff(first_diff)
+    std_dev = np.std(wave)
+    normalized_first_diff = first_diff/std_dev
+    normalized_sec_diff = second_diff/std_dev
+
+    return [first_diff, second_diff, normalized_first_diff, normalized_sec_diff]
 
 def model_based(wave):
     """Calculates and returns the following:
